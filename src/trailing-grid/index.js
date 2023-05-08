@@ -9,6 +9,8 @@ let colorWithAlpha;
 let numRows;
 let numCols;
 
+let currentRow = -1;
+let currentCol = -1;
 let allNeighbors = []; // Array to store all neighbors
 
 function setup() {
@@ -25,19 +27,24 @@ function draw() {
   background(backgroundColor);
 
   // Calculate the row and column of the cell that the mouse is currently over
-  let currentRow = floor(mouseY / cellSize);
-  let currentCol = floor(mouseX / cellSize);
+  let row = floor(mouseY / cellSize);
+  let col = floor(mouseX / cellSize);
+
+  // Check if the mouse has moved to a different cell
+  if (row !== currentRow || col !== currentCol) {
+    currentRow = row;
+    currentCol = col;
+    // Add new neighbors to the allNeighbors array
+    allNeighbors.push(...getRandomNeighbors(row, col));
+  }
 
   // Use the calculated row and column to determine the position of the cell
-  let x = currentCol * cellSize;
-  let y = currentRow * cellSize;
+  let x = col * cellSize;
+  let y = row * cellSize;
 
   // Draw a highlighted rectangle over the cell under the mouse cursor
   stroke(colorWithAlpha);
   rect(x, y, cellSize, cellSize);
-
-  // Add new neighbors to the allNeighbors array
-  allNeighbors.push(...getRandomNeighbors(currentRow, currentCol));
 
   // Draw and update all neighbors
   for (let neighbor of allNeighbors) {
