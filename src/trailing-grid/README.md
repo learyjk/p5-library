@@ -10,6 +10,8 @@
 
 1.3. Use nested loops to draw a grid of rectangles on the canvas. Each rectangle represents a cell in the grid.
 
+1.4 Add windowResized function to make the canvas responsive. Update numRows and numCols within that functiona s well.
+
 ### Step 2: Highlight the cell under the mouse cursor
 
 2.1. Calculate the row and column of the cell that the mouse is currently over using floor(mouseY / cellSize) and floor(mouseX / cellSize).
