@@ -82,3 +82,9 @@ function getRandomNeighbors(row, col) {
   }
   return neighbors;
 }
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  numRows = Math.ceil(windowHeight / cellSize); // number of rows in the grid
+  numCols = Math.ceil(windowWidth / cellSize); // number of columns in the grid
+}
