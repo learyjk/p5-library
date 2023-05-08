@@ -22,6 +22,7 @@ function setup() {
 function draw() {
   background(backgroundColor);
   // Draw the grid
+  /*
   for (let row = 0; row < numRows; row++) {
     for (let col = 0; col < numCols; col++) {
       let x = col * cellSize;
@@ -29,4 +30,17 @@ function draw() {
       rect(x, y, cellSize, cellSize);
     }
   }
+  */
+
+  // Calculate the row and column of the cell that the mouse is currently over
+  let currentRow = floor(mouseY / cellSize);
+  let currentCol = floor(mouseX / cellSize);
+
+  // Use the calculated row and column to determine the position of the cell
+  let x = currentCol * cellSize;
+  let y = currentRow * cellSize;
+
+  // Draw a highlighted rectangle over the cell under the mouse cursor
+  stroke(colorWithAlpha);
+  rect(x, y, cellSize, cellSize);
 }

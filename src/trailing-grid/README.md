@@ -2,21 +2,19 @@
 
 ## As Seen on thisisdash.com
 
-### Step 1: Set up the canvas and draw a grid
+### Step 1: Set up the canvas and define color variables
 
-1.1. Create a canvas with createCanvas(windowWidth, windowHeight) and set up basic drawing properties like noFill(), stroke(255), and strokeWeight(1).
+1.1. Create a canvas with createCanvas(windowWidth, windowHeight) and set up basic drawing properties like noFill(), stroke(colorWithAlpha), and strokeWeight(1).
 
-1.2. Calculate the number of rows and columns in the grid based on the canvas size and the desired cell size.
+1.2. Define color variables for the grid cells (colorR, colorG, colorB) and the background (backgroundColor), as well as a starting alpha value (startingAlpha) for the active cell.
 
-1.3. Use nested loops to draw a grid of rectangles on the canvas. Each rectangle represents a cell in the grid.
-
-1.4 Add windowResized function to make the canvas responsive. Update numRows and numCols within that functiona s well.
+1.3. Calculate the number of rows and columns in the grid based on the canvas size and the desired cell size.
 
 ### Step 2: Highlight the cell under the mouse cursor
 
 2.1. Calculate the row and column of the cell that the mouse is currently over using floor(mouseY / cellSize) and floor(mouseX / cellSize).
 
-2.2. Use the calculated row and column to determine the position of the cell and draw a highlighted rectangle over it.
+2.2. Use the calculated row and column to determine the position of the cell and draw a highlighted rectangle over it using the color colorWithAlpha.
 
 ### Step 3: Generate random neighboring cells
 
@@ -36,12 +34,14 @@
 
 4.4. Remove neighbors from the allNeighbors array if their opacity has reached zero.
 
-### Step 5: Combine everything and test the result
+### Step 5: Handle window resizing
 
-5.1. Combine all the code from the previous steps into the setup and draw functions.
+5.1. Add a windowResized function to handle resizing the canvas when the window is resized.
 
-5.2. Test the result by moving the mouse over the grid. Observe the highlighted cell and the fading out of neighboring cells.
+5.2. In the windowResized function, recalculate the number of rows and columns based on the new window size and resize the canvas accordingly.
 
-5.3. Adjust parameters like the cell size, fade-out speed, and probability of including neighbors to achieve the desired visual effect.
+5.3. Combine all the code from the previous steps into the setup, draw, and windowResized functions.
 
-With these steps, learners can gradually build up the code and understand the concepts involved in creating the effect of trailing grid cells that fade out over time. Each step introduces new concepts and builds on the previous step, making it easier for beginners to follow along.
+5.4. Test the result by moving the mouse over the grid. Observe the highlighted cell and the fading out of neighboring cells.
+
+5.5. Adjust parameters like the cell size, fade-out speed, and probability of including neighbors to achieve the desired visual effect.
