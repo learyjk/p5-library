@@ -9,6 +9,8 @@ let colorWithAlpha;
 let numRows;
 let numCols;
 
+let allNeighbors = []; // Array to store all neighbors
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   colorWithAlpha = color(colorR, colorG, colorB, startingAlpha);
@@ -21,16 +23,6 @@ function setup() {
 
 function draw() {
   background(backgroundColor);
-  // Draw the grid
-  /*
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      let x = col * cellSize;
-      let y = row * cellSize;
-      rect(x, y, cellSize, cellSize);
-    }
-  }
-  */
 
   // Calculate the row and column of the cell that the mouse is currently over
   let currentRow = floor(mouseY / cellSize);
@@ -43,4 +35,43 @@ function draw() {
   // Draw a highlighted rectangle over the cell under the mouse cursor
   stroke(colorWithAlpha);
   rect(x, y, cellSize, cellSize);
+
+  // Add new neighbors to the allNeighbors array
+  allNeighbors.push(...getRandomNeighbors(currentRow, currentCol));
+
+  // Draw and update all neighbors
+  for (let neighbor of allNeighbors) {
+    let neighborX = neighbor.col * cellSize;
+    let neighborY = neighbor.row * cellSize;
+    // Update the opacity of the neighbor
+    neighbor.opacity = max(0, neighbor.opacity - 5); // Decrease opacity by 5 each frame
+    stroke(colorR, colorG, colorB, neighbor.opacity);
+    rect(neighborX, neighborY, cellSize, cellSize);
+  }
+  // Remove neighbors with zero opacity
+  allNeighbors = allNeighbors.filter((neighbor) => neighbor.opacity > 0);
+}
+
+function getRandomNeighbors(row, col) {
+  let neighbors = [];
+  for (let dRow = -1; dRow <= 1; dRow++) {
+    for (let dCol = -1; dCol <= 1; dCol++) {
+      let neighborRow = row + dRow;
+      let neighborCol = col + dCol;
+      let isCurrentCell = dRow === 0 && dCol === 0;
+      let isInBounds =
+        neighborRow >= 0 &&
+        neighborRow < numRows &&
+        neighborCol >= 0 &&
+        neighborCol < numCols;
+      if (!isCurrentCell && isInBounds && Math.random() < 0.5) {
+        neighbors.push({
+          row: neighborRow,
+          col: neighborCol,
+          opacity: 255, // Initial opacity of the neighbor
+        });
+      }
+    }
+  }
+  return neighbors;
 }
