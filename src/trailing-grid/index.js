@@ -60,17 +60,27 @@ function draw() {
 }
 
 function getRandomNeighbors(row, col) {
-  let neighbors = [];
+  let neighbors = []; // Initialize an empty array to store neighbor cells
+
+  // Loop through the cells surrounding the given cell (row, col)
   for (let dRow = -1; dRow <= 1; dRow++) {
     for (let dCol = -1; dCol <= 1; dCol++) {
+      // Calculate the neighboring cell's row and column indices
       let neighborRow = row + dRow;
       let neighborCol = col + dCol;
+
+      // Check if the current cell in the loop is the given cell (row, col)
       let isCurrentCell = dRow === 0 && dCol === 0;
+
+      // Check if the neighboring cell is within the grid boundaries
       let isInBounds =
         neighborRow >= 0 &&
         neighborRow < numRows &&
         neighborCol >= 0 &&
         neighborCol < numCols;
+
+      // If the cell is not the given cell, is within bounds, and has a 50% chance,
+      // add the neighboring cell to the neighbors array
       if (!isCurrentCell && isInBounds && Math.random() < 0.5) {
         neighbors.push({
           row: neighborRow,
@@ -80,6 +90,8 @@ function getRandomNeighbors(row, col) {
       }
     }
   }
+
+  // Return the array of randomly-selected neighboring cells
   return neighbors;
 }
 
