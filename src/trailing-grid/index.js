@@ -3,10 +3,11 @@ const CELL_SIZE = 40; // size of each cell in the grid
 const COLOR_R = 79;
 const COLOR_G = 38;
 const COLOR_B = 233;
-const STARTING_ALPHA = 200;
+const STARTING_ALPHA = 255;
 const BACKGROUND_COLOR = 31;
 const PROB_OF_NEIGHBOR = 0.5;
 const AMT_FADE_PER_FRAME = 5;
+const STROKE_WEIGHT = 1;
 
 // VARIABLES
 let colorWithAlpha;
@@ -21,9 +22,9 @@ function setup() {
   colorWithAlpha = color(COLOR_R, COLOR_G, COLOR_B, STARTING_ALPHA);
   noFill();
   stroke(colorWithAlpha);
-  strokeWeight(1);
-  numRows = Math.ceil(windowHeight / CELL_SIZE); // number of rows in the grid
-  numCols = Math.ceil(windowWidth / CELL_SIZE); // number of columns in the grid
+  strokeWeight(STROKE_WEIGHT);
+  numRows = Math.ceil(windowHeight / CELL_SIZE);
+  numCols = Math.ceil(windowWidth / CELL_SIZE);
 }
 
 function draw() {
@@ -34,10 +35,11 @@ function draw() {
   let col = floor(mouseX / CELL_SIZE);
 
   // Check if the mouse has moved to a different cell
+  // If yes, getRandomNeighbors to display
   if (row !== currentRow || col !== currentCol) {
     currentRow = row;
     currentCol = col;
-    // Add new neighbors to the allNeighbors array
+
     allNeighbors.push(...getRandomNeighbors(row, col));
   }
 
@@ -53,8 +55,8 @@ function draw() {
   for (let neighbor of allNeighbors) {
     let neighborX = neighbor.col * CELL_SIZE;
     let neighborY = neighbor.row * CELL_SIZE;
-    // Update the opacity of the neighbor
-    neighbor.opacity = max(0, neighbor.opacity - AMT_FADE_PER_FRAME); // Decrease opacity by 5 each frame
+    // Decrease the opacity of the neighbor each frame
+    neighbor.opacity = max(0, neighbor.opacity - AMT_FADE_PER_FRAME);
     stroke(COLOR_R, COLOR_G, COLOR_B, neighbor.opacity);
     rect(neighborX, neighborY, CELL_SIZE, CELL_SIZE);
   }
@@ -82,13 +84,13 @@ function getRandomNeighbors(row, col) {
         neighborCol >= 0 &&
         neighborCol < numCols;
 
-      // If the cell is not the given cell, is within bounds, and has a 50% chance,
+      // If the cell is not current cell, is within bounds, and meets prob,
       // add the neighboring cell to the neighbors array
       if (!isCurrentCell && isInBounds && Math.random() < PROB_OF_NEIGHBOR) {
         neighbors.push({
           row: neighborRow,
           col: neighborCol,
-          opacity: 255, // Initial opacity of the neighbor
+          opacity: STARTING_ALPHA,
         });
       }
     }
@@ -100,6 +102,6 @@ function getRandomNeighbors(row, col) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  numRows = Math.ceil(windowHeight / CELL_SIZE); // number of rows in the grid
-  numCols = Math.ceil(windowWidth / CELL_SIZE); // number of columns in the grid
+  numRows = Math.ceil(windowHeight / CELL_SIZE);
+  numCols = Math.ceil(windowWidth / CELL_SIZE);
 }

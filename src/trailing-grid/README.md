@@ -2,7 +2,7 @@
 
 ## As Seen on thisisdash.com
 
-### Step 1: Set up the canvas and define color variables
+### Step 1: Set up the grid and define variables
 
 1.1. Create a canvas with createCanvas(windowWidth, windowHeight) and set up basic drawing properties like noFill(), stroke(colorWithAlpha), and strokeWeight(1).
 
