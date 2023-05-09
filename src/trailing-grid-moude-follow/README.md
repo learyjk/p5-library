@@ -2,7 +2,7 @@
 
 ## As Seen on thisisdash.com
 
-### Step 1: Set up the canvas and define color variables
+### Step 1: Set up the grid and define variables
 
 1.1. Create a canvas with createCanvas(windowWidth, windowHeight) and set up basic drawing properties like noFill(), stroke(colorWithAlpha), and strokeWeight(1).
 
@@ -33,6 +33,12 @@
 4.3. In the draw function, loop through all neighbors in the allNeighbors array. Draw each neighbor with its current opacity and decrease the opacity over time.
 
 4.4. Remove neighbors from the allNeighbors array if their opacity has reached zero.
+
+In Step 4, we've added logic to check if the mouse has moved to a different cell. We do this by comparing the current row and column (row and col) with the previous row and column (currentRow and currentCol). If the mouse has moved to a different cell, we update currentRow and currentCol to the new values and add new neighbors to the allNeighbors array using the getRandomNeighbors function.
+
+We then loop through all neighbors in the allNeighbors array, draw each neighbor with its current opacity, and decrease the opacity over time using the expression neighbor.opacity = max(0, neighbor.opacity - 5). The max function ensures that the opacity value does not go below zero.
+
+Finally, we remove neighbors from the allNeighbors array if their opacity has reached zero. We do this using the filter function, which creates a new array with only the neighbors that have an opacity value greater than zero.
 
 ### Step 5: Handle window resizing
 
