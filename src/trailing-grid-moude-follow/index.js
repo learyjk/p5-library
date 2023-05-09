@@ -1,8 +1,8 @@
 // CONSTANTS
 const CELL_SIZE = 40; // size of each cell in the grid
-const COLOR_R = 79;
-const COLOR_G = 38;
-const COLOR_B = 233;
+const COLOR_R = 255;
+const COLOR_G = 255;
+const COLOR_B = 255;
 const STARTING_ALPHA = 255;
 const BACKGROUND_COLOR = 31;
 const PROB_OF_NEIGHBOR = 0.5;
