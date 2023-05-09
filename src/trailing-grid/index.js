@@ -1,34 +1,37 @@
-const cellSize = 40; // size of each cell in the grid
-const colorR = 79;
-const colorG = 38;
-const colorB = 233;
-const startingAlpha = 200;
-const backgroundColor = 31;
-let colorWithAlpha;
+// CONSTANTS
+const CELL_SIZE = 40; // size of each cell in the grid
+const COLOR_R = 79;
+const COLOR_G = 38;
+const COLOR_B = 233;
+const STARTING_ALPHA = 200;
+const BACKGROUND_COLOR = 31;
+const PROB_OF_NEIGHBOR = 0.5;
+const AMT_FADE_PER_FRAME = 5;
 
+// VARIABLES
+let colorWithAlpha;
 let numRows;
 let numCols;
-
 let currentRow = -1;
 let currentCol = -1;
 let allNeighbors = []; // Array to store all neighbors
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  colorWithAlpha = color(colorR, colorG, colorB, startingAlpha);
+  colorWithAlpha = color(COLOR_R, COLOR_G, COLOR_B, STARTING_ALPHA);
   noFill();
   stroke(colorWithAlpha);
   strokeWeight(1);
-  numRows = Math.ceil(windowHeight / cellSize); // number of rows in the grid
-  numCols = Math.ceil(windowWidth / cellSize); // number of columns in the grid
+  numRows = Math.ceil(windowHeight / CELL_SIZE); // number of rows in the grid
+  numCols = Math.ceil(windowWidth / CELL_SIZE); // number of columns in the grid
 }
 
 function draw() {
-  background(backgroundColor);
+  background(BACKGROUND_COLOR);
 
   // Calculate the row and column of the cell that the mouse is currently over
-  let row = floor(mouseY / cellSize);
-  let col = floor(mouseX / cellSize);
+  let row = floor(mouseY / CELL_SIZE);
+  let col = floor(mouseX / CELL_SIZE);
 
   // Check if the mouse has moved to a different cell
   if (row !== currentRow || col !== currentCol) {
@@ -39,21 +42,21 @@ function draw() {
   }
 
   // Use the calculated row and column to determine the position of the cell
-  let x = col * cellSize;
-  let y = row * cellSize;
+  let x = col * CELL_SIZE;
+  let y = row * CELL_SIZE;
 
   // Draw a highlighted rectangle over the cell under the mouse cursor
   stroke(colorWithAlpha);
-  rect(x, y, cellSize, cellSize);
+  rect(x, y, CELL_SIZE, CELL_SIZE);
 
   // Draw and update all neighbors
   for (let neighbor of allNeighbors) {
-    let neighborX = neighbor.col * cellSize;
-    let neighborY = neighbor.row * cellSize;
+    let neighborX = neighbor.col * CELL_SIZE;
+    let neighborY = neighbor.row * CELL_SIZE;
     // Update the opacity of the neighbor
-    neighbor.opacity = max(0, neighbor.opacity - 5); // Decrease opacity by 5 each frame
-    stroke(colorR, colorG, colorB, neighbor.opacity);
-    rect(neighborX, neighborY, cellSize, cellSize);
+    neighbor.opacity = max(0, neighbor.opacity - AMT_FADE_PER_FRAME); // Decrease opacity by 5 each frame
+    stroke(COLOR_R, COLOR_G, COLOR_B, neighbor.opacity);
+    rect(neighborX, neighborY, CELL_SIZE, CELL_SIZE);
   }
   // Remove neighbors with zero opacity
   allNeighbors = allNeighbors.filter((neighbor) => neighbor.opacity > 0);
@@ -81,7 +84,7 @@ function getRandomNeighbors(row, col) {
 
       // If the cell is not the given cell, is within bounds, and has a 50% chance,
       // add the neighboring cell to the neighbors array
-      if (!isCurrentCell && isInBounds && Math.random() < 0.5) {
+      if (!isCurrentCell && isInBounds && Math.random() < PROB_OF_NEIGHBOR) {
         neighbors.push({
           row: neighborRow,
           col: neighborCol,
@@ -97,6 +100,6 @@ function getRandomNeighbors(row, col) {
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  numRows = Math.ceil(windowHeight / cellSize); // number of rows in the grid
-  numCols = Math.ceil(windowWidth / cellSize); // number of columns in the grid
+  numRows = Math.ceil(windowHeight / CELL_SIZE); // number of rows in the grid
+  numCols = Math.ceil(windowWidth / CELL_SIZE); // number of columns in the grid
 }
