@@ -1,20 +1,21 @@
+// CONSTANTS
 const NUM_CIRCLES = 16;
-const FLOAT_SPEED = 2;
-const TRANSITION_SPEED = 0.05; // Adjust this value to change the transition speed
+const FLOAT_SPEED = 1;
+const TRANSITION_SPEED = 0.05;
+const CIRCLE_SIZE_DIVISOR = 25;
 
-// Declare a global array variable to store circle objects
+// VARIABLES
 let circles = [];
 let float = true;
 let circleSize;
 
 function setup() {
-  // Set up the canvas size
   createCanvas(windowWidth, windowHeight);
   noStroke();
 
   // Create and initialize circle objects with position and speed
   for (let i = 0; i < NUM_CIRCLES; i++) {
-    circleSize = width / 25;
+    circleSize = width / CIRCLE_SIZE_DIVISOR;
     let circle = {
       x: random(circleSize / 2, width - circleSize / 2),
       y: random(circleSize / 2, height - circleSize / 2),
@@ -47,9 +48,11 @@ function draw() {
         circle.speedY = -circle.speedY;
       }
     } else {
+      // calculate spacing we need for circles
       let spacing = width / NUM_CIRCLES;
+
       // Set target positions for the lined-up state
-      circle.targetX = i * spacing + circleSize / 1.5;
+      circle.targetX = i * spacing + circleSize * 0.75;
       circle.targetY = height / 2;
 
       // Animate the transition to the target positions using lerp
@@ -62,11 +65,15 @@ function draw() {
   }
 }
 
+function mouseWheel() {
+  float = false;
+}
+
 function mouseClicked() {
   float = !float;
 }
 
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
-  circleSize = width / 25;
+  circleSize = width / CIRCLE_SIZE_DIVISOR;
 }
