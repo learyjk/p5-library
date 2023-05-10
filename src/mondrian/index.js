@@ -1,54 +1,60 @@
-const MIN_LINES = 2;
-const MAX_LINES = 5;
-const PADDING_MULTIPLE = 4;
-const MIN_SPACING = 50;
-const LINE_SIZE = 10;
-
-let xCoordsForVerticalLines = [];
-let yCoordsForHorizontalLines = [];
-
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  console.log(windowWidth);
-  xCoordsForVerticalLines = getStartCoordinates(windowWidth);
-  yCoordsForHorizontalLines = getStartCoordinates(windowHeight);
-  fill(30);
-  noStroke();
+  stroke(0);
+  strokeWeight(5);
+  noLoop();
 }
 
 function draw() {
-  drawLinesFromCoordinates(xCoordsForVerticalLines, "vertical");
-  drawLinesFromCoordinates(yCoordsForHorizontalLines);
+  background(255);
+  drawRect(0, 0, width, height, 3);
 }
 
-function getStartCoordinates(distance) {
-  let coords = [];
-  const spacing = LINE_SIZE * PADDING_MULTIPLE;
-  const numLines = floor(random(MIN_LINES, MAX_LINES));
+let toggle = true;
 
-  // kkep looping until we have the number of lines we need
-  while (coords.length < numLines) {
-    let randomCoord = floor(random(spacing, distance - spacing));
-    let isGoodCoord = true;
-    // Check that coord for this line is far enough from other coords
-    for (let coord of coords) {
-      if (Math.abs(randomCoord - coord) < LINE_SIZE + spacing) {
-        isGoodCoord = false;
-      }
-      if (!isGoodCoord) break;
-    }
-    if (isGoodCoord) coords.push(randomCoord);
-  }
-  console.log(coords);
-  return coords;
-}
-
-function drawLinesFromCoordinates(coords, orientation = "horizontal") {
-  coords.forEach(function (coord) {
-    if (orientation === "vertical") {
-      rect(coord, -LINE_SIZE + frameCount * 10, LINE_SIZE);
+function drawRect(x, y, w, h, depth) {
+  if (depth > 0) {
+    // Recursive Case
+    if (toggle) {
+      // Vertical line = left and right rects
+      let sizePercentage = random([0.4, 0.8]);
+      // left rect
+      drawRect(x, y, w * sizePercentage, h, depth - 1);
+      // right rect
+      drawRect(
+        x + w * sizePercentage,
+        y,
+        w * (1 - sizePercentage),
+        h,
+        depth - 1
+      );
     } else {
-      rect(-LINE_SIZE + frameCount * 10, coord, LINE_SIZE);
+      // Horizontal line = top and bottom rects
+      let sizePercentage = random([0.4, 0.8]);
+      // top rect
+      drawRect(x, y, w, h * sizePercentage, depth - 1);
+      // bottom rect
+      drawRect(
+        x,
+        y + h * sizePercentage,
+        w,
+        h * (1 - sizePercentage),
+        depth - 1
+      );
     }
-  });
+    toggle = !toggle;
+  } else {
+    // Base case: depth = 0
+    // draw a rectangle with white fill or random color
+    fill(255);
+    let colors = [
+      [230, 0, 0], // red
+      [0, 0, 230], // blue
+      [230, 230, 0], // yellow
+    ];
+    if (random(1) < 0.3) {
+      fill(random(colors));
+    }
+    rect(x, y, w, h);
+  }
 }
