@@ -1,15 +1,23 @@
+// PLAN OF ATTACK
+// -draw image on canvas
+// -draw single particle over image
+// -map particles to image
+// -set image color at particle position
+// -stretch to fill screen
+// -repulse particles from mouse
+
+const PARTICLE_SIZE = 10;
+const RESOLUTION = 10;
 const MAX_FORCE = 10;
 const MIN_FORCE = 0;
-const PARTICLE_SIZE = 10;
+const EFFECT_DISTANCE = 200;
 
-let showGhosts = false;
-
-let particles = [];
-let resolution = 20; // draw every 4th pixel to prevent lag
+let imgUrl = "./src/particle-images/webflow.png";
 let img;
+let particles = [];
 
 function preload() {
-  img = loadImage("./src/particle-images/webflow.png");
+  img = loadImage(imgUrl);
 }
 
 function setup() {
@@ -19,26 +27,22 @@ function setup() {
 
 function draw() {
   background(40);
-  noStroke();
-
+  //image(img, 0, 0, width, height);
   particles.forEach((particle) => {
     particle.update();
     particle.draw();
   });
-  //image(img, 0, 0, width, height);
 }
 
 function spawnParticles() {
-  // i and j are screen coordinates
-  for (let i = 0; i < width; i += resolution) {
-    for (let j = 0; j < height; j += resolution) {
+  for (let i = 0; i < width; i += RESOLUTION) {
+    for (let j = 0; j < height; j += RESOLUTION) {
       let x = (i / width) * img.width;
       let y = (j / height) * img.height;
-      let color = img.get(x, y); // get color from image [r, g, b, a]
-      // skip transparent pixels (alpha = 0
-      if (color[3] !== 0) {
-        particles.push(new Particle(i, j, color));
-      }
+      const color = img.get(x, y);
+      particles.push(
+        new Particle(i + PARTICLE_SIZE / 2, j + PARTICLE_SIZE / 2, color)
+      );
     }
   }
 }
@@ -48,53 +52,60 @@ class Particle {
     this.x = x;
     this.y = y;
     this.color = color;
-
     this.targetX = x;
     this.targetY = y;
   }
 
   update() {
-    // distance and angle to cursor
-    let distanceToMouse = dist(this.x, this.y, mouseX, mouseY);
-    let angleToMouse = atan2(this.y - mouseY, this.x - mouseX);
+    // get vectors for mouse, target, and current position
+    let mouseVector = createVector(mouseX, mouseY);
+    let currentVector = createVector(this.x, this.y);
+    let targetVector = createVector(this.targetX, this.targetY);
 
-    // target distance and angle
-    let targetDistance = dist(this.x, this.y, this.targetX, this.targetY);
-    let targetAngle = atan2(this.targetY - this.y, this.targetX - this.x);
+    // calculate vector from mouse to particle and its magnitude (distance)
+    let fromMouseToParticle = p5.Vector.sub(currentVector, mouseVector);
+    let distanceToMouse = fromMouseToParticle.mag();
 
-    //attractive force
-    let mouseForce = 0;
-    if (distanceToMouse < 100) {
-      mouseForce = map(distanceToMouse, 0, 100, MAX_FORCE, MIN_FORCE);
+    // calculate vector from particle to target and its magnitude
+    let fromParticleToTarget = p5.Vector.sub(targetVector, currentVector);
+    let distanceToTarget = fromParticleToTarget.mag();
+
+    let totalForce = createVector(0, 0);
+
+    // if mouse is within 100 pixels, calculate a repulsive force
+    if (distanceToMouse < EFFECT_DISTANCE) {
+      let respulsionForce = map(
+        distanceToMouse,
+        0,
+        EFFECT_DISTANCE,
+        MAX_FORCE,
+        MIN_FORCE
+      );
+      fromMouseToParticle.setMag(respulsionForce);
+      totalForce.add(fromMouseToParticle);
     }
-    // repulsive force
-    let homeForce = map(targetDistance, 0, 100, MIN_FORCE, MAX_FORCE); // repulsive force
 
-    // calculate velocity based on forces
-    let velocityX =
-      cos(angleToMouse) * mouseForce + cos(targetAngle) * homeForce;
-    let velocityY =
-      sin(angleToMouse) * mouseForce + sin(targetAngle) * homeForce;
+    // if particle is not at tartget, calculate an attractive force
+    if (distanceToMouse > 0) {
+      let attractionForce = map(
+        distanceToTarget,
+        0,
+        EFFECT_DISTANCE,
+        MIN_FORCE,
+        MAX_FORCE
+      );
+      fromParticleToTarget.setMag(attractionForce);
+      totalForce.add(fromParticleToTarget);
+    }
 
-    this.x += velocityX;
-    this.y += velocityY;
+    // add the forces to the position
+    this.x += totalForce.x;
+    this.y += totalForce.y;
   }
 
   draw() {
-    const x1 = this.x + PARTICLE_SIZE / 2;
-    const y1 = this.y + PARTICLE_SIZE / 2;
-    const x2 = this.targetX + PARTICLE_SIZE / 2;
-    const y2 = this.targetY + PARTICLE_SIZE / 2;
-
-    if (showGhosts) {
-      fill(255, 20);
-      ellipse(x2, y2, PARTICLE_SIZE);
-      strokeWeight(1);
-      stroke(255, 20);
-      line(x1, y1, x2, y2);
-    }
-
     fill(this.color);
-    ellipse(x1, y1, PARTICLE_SIZE);
+    noStroke();
+    ellipse(this.x, this.y, PARTICLE_SIZE);
   }
 }
